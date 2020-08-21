@@ -1,0 +1,80 @@
+# Markov Chain Monte Carlo Method
+
+import scipy
+import pymc3 as pm
+
+
+x = t_north
+y = north
+
+with pm.Model() as linear_model:
+    #Intercept
+    intercept = pm.Normal('Intercept' , mu = 0, sd = 10)
+    
+    #Slope
+    slope =  pm.Normal('Slope' , mu =0,  sd = 10)
+    
+    #Standard Deviation
+    sigma  = pm.HalfNormal('sigma', sd = 10)
+    
+    #Estimation of Mean
+    mean = intercept + slope*x
+    
+    #observed values
+    
+    Y_obs = pm.Normal('Y_obs', mu = mean, sd = sigma, observed = y)
+    
+    #sampler
+    step = pm.NUTS()
+    
+    #Posterior Distribution
+    linear_trace = pm.sample(10000,step)
+    
+
+pm.traceplot(linear_trace, figsize = (20, 20))
+plt.savefig('site_name - North (MCMC)')
+
+summary = pm.summary(linear_trace)
+v_north = summary.iloc[1,0]
+v_north_unc =  summary.iloc[1,1]
+
+
+
+x = t_east
+y = east
+
+with pm.Model() as linear_model:
+    #Intercept
+    intercept = pm.Normal('Intercept' , mu = 0, sd = 10)
+    
+    #Slope
+    slope =  pm.Normal('Slope' , mu =0,  sd = 10)
+    
+    #Standard Deviation
+    sigma  = pm.HalfNormal('sigma', sd = 10)
+    
+    #Estimation of Mean
+    mean = intercept + slope*x
+    
+    #observed values
+    
+    Y_obs = pm.Normal('Y_obs', mu = mean, sd = sigma, observed = y)
+    
+    #sampler
+    step = pm.NUTS()
+    
+    #Posterior Distribution
+    linear_trace = pm.sample(10000,step)
+    
+
+pm.traceplot(linear_trace, figsize = (20, 20))
+plt.savefig('site_name - East (MCMC)')
+
+summary = pm.summary(linear_trace)
+v_east = summary.iloc[1,0]
+v_east_unc =  summary.iloc[1,1]
+
+print('V_east = ', v_east)
+print('V_east_unc = ', v_east_unc)
+print('V_north = ', v_north)
+print('V_north_unc = ', v_north_unc)
